@@ -75,10 +75,10 @@ def create_nn(batch_size = 100, learning_rate = 0.1, epochs= 20, log_interval = 
             # telling pytorch to to execute a gradient decent step based on the gradients
             # calculated during back propagation
             optimizer.step()
-        if batch_idx % log_interval ==0:
-            print('Train Epoch: {} [{}/{} ({:0f}%)]\tLoss: {:.6f}'.format(
-                epoch, batch_idx*len(data),len(train_loader.dataset),
-            100. *batch_idx/len(train_loader), loss.data[0]))
+            if batch_idx % log_interval ==0:
+                print('Train Epoch: {} [{}/{} ({:0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx*len(data),len(train_loader.dataset),
+                100. *batch_idx/len(train_loader), loss.data[0]))
 
 
 if __name__ == '__main__':
