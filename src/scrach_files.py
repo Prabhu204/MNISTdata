@@ -14,7 +14,7 @@ import torchvision.transforms as transforms
 from torchvision import datasets
 
 
-def create_nn(batch_size = 200, learning_rate = 0.1, epochs= 5, log_interval = 10):
+def create_nn(batch_size = 200, learning_rate = 0.1, epochs= 2, log_interval = 10):
     # loading the data using datasets
     # transforms.Compose clubs all the transforms provided to it and are applied to the input one by one.
     # transforms.ToTensor converts image into pytorch tensor.
@@ -49,7 +49,7 @@ def create_nn(batch_size = 200, learning_rate = 0.1, epochs= 5, log_interval = 1
             x = F.relu(self.fc1(x))
             x = F.relu(self.fc2(x))
             x = self.fc3(x)
-            return F.log_softmax(x)
+            return F.log_softmax(x, dim=0)
 
     net = Net()
     print(net)
@@ -80,6 +80,25 @@ def create_nn(batch_size = 200, learning_rate = 0.1, epochs= 5, log_interval = 1
                 print('Train Epoch: {} [{}/{} ({:0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx*len(data),len(train_loader.dataset),
                 100. *batch_idx/len(train_loader), loss.data[0]))
+
+
+    test_loss = 0
+    correct = 0
+
+    for data,target in test_loader:
+        data, target = data, target
+        data = data.view(-1,28*28)
+        net_out = net(data)
+        # sum up batch loss
+        test_loss += criterion(net_out, target).data[0]
+
+        pred = net_out.max(1)[1] # getting index of max log probabilities
+                                 # suppose y.max(1) takes the max over dimention 1 and returns two values
+        correct += pred.eq(target.data).sum()
+
+        test_loss /= len(test_loader.dataset)
+        print('\nTest set: Avarage loss: {:.4f}, Accuracy:{}/{} ({:.0f}%)\n'.format(test_loss,correct,len(test_loader.dataset),
+                                                                                    100.*correct/len(test_loader.dataset)))
 
 
 if __name__ == '__main__':
