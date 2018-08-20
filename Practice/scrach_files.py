@@ -13,8 +13,10 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 import torchvision.datasets
 
+
 def create_nn(batch_size = 100, learning_rate = 0.1, epochs= 20, log_interval = 10):
 
+    train_loader = torch.utils.data.DataLoader(datasets.MNNIST())
     class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
