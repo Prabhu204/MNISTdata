@@ -102,8 +102,7 @@ def create_nn(batch_size = 200, learning_rate = 0.1, epochs= 2, log_interval = 1
                                                                                     100.*correct/len(test_loader.dataset)))
 
 
-if __name__ == '__main__':
-    create_nn()
+
 
 
 
