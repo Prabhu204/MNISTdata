@@ -11,12 +11,27 @@ import torch.nn.functional as F
 from torch import optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
-import torchvision.datasets
+from torchvision import datasets
 
 
 def create_nn(batch_size = 100, learning_rate = 0.1, epochs= 20, log_interval = 10):
-
-    train_loader = torch.utils.data.DataLoader(datasets.MNNIST())
+    # loading the data using datasets
+    # transforms.Compose clubs all the transforms provided to it and are applied to the input one by one.
+    # transforms.ToTensor converts image into pytorch tensor.
+    # transforms.Normalize is just input data scaling(mean and std) and these values are predefined and changing these values not advised.
+    train_loader = DataLoader(datasets.MNIST('Data',
+                                             train= True,
+                                             download= True,
+                                             transform = transforms.Compose([transforms.ToTensor(),
+                                                                            transforms.Normalize((0.1307),(0.3081))],
+                                             batch_size = batch_size,
+                                             shuffle = True)))
+    test_loader = DataLoader(datasets.MNIST('Data',
+                                            train= False,
+                                            download= True,
+                                            transform=transforms.Compose([transforms.ToTensor(),
+                                                                          transforms.Normalize((0.1307),(0.13081))]),
+                                            ))
     class Net(nn.Module):
         def __init__(self):
             super(Net, self).__init__()
