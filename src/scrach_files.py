@@ -14,24 +14,24 @@ import torchvision.transforms as transforms
 from torchvision import datasets
 
 
-def create_nn(batch_size = 100, learning_rate = 0.1, epochs= 20, log_interval = 10):
+def create_nn(batch_size = 200, learning_rate = 0.1, epochs= 5, log_interval = 10):
     # loading the data using datasets
     # transforms.Compose clubs all the transforms provided to it and are applied to the input one by one.
     # transforms.ToTensor converts image into pytorch tensor.
     # transforms.Normalize is just input data scaling(mean and std) and these values are predefined and changing these values not advised.
-    train_loader = DataLoader(datasets.MNIST('/home/prabhu/MNISTdata/Data',
+    train_loader = DataLoader(datasets.MNIST('../Data',
                                              train= True,
                                              download= True,
                                              transform = transforms.Compose([transforms.ToTensor(),
-                                                                            transforms.Normalize((0.1307),(0.3081))])),
+                                                                            transforms.Normalize((0.1307,),(0.3081,))])),
                                              batch_size = batch_size,
                                              shuffle = True
                              )
-    test_loader = DataLoader(datasets.MNIST('/home/prabhu/MNISTdata/Data',
+    test_loader = DataLoader(datasets.MNIST('../Data',
                                             train= False,
                                             download= True,
                                             transform=transforms.Compose([transforms.ToTensor(),
-                                                                          transforms.Normalize((0.1307),(0.13081))])),
+                                                                          transforms.Normalize((0.1307,),(0.13081,))])),
                                             batch_size = batch_size,
                                             shuffle = True
                             )
@@ -48,7 +48,7 @@ def create_nn(batch_size = 100, learning_rate = 0.1, epochs= 20, log_interval = 
         def forward(self, x):
             x = F.relu(self.fc1(x))
             x = F.relu(self.fc2(x))
-            x = F.fc3(x)
+            x = self.fc3(x)
             return F.log_softmax(x)
 
     net = Net()
@@ -64,6 +64,7 @@ def create_nn(batch_size = 100, learning_rate = 0.1, epochs= 20, log_interval = 
 
     for epoch in range(epochs):
         for batch_idx, (data, target) in enumerate(train_loader):
+
             data, target = Variable(data), Variable(target) # converting data into Pytorch variables
             # resize data from (batch_size,1,28,28) to (batch_size, 28*28)
             data = data.view(-1,28*28)  # applying reshape to the function for single dimension
