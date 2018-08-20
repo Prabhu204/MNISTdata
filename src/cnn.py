@@ -32,12 +32,19 @@ pool, this can greatly reduce the size of the feature set that we pass into the 
 
 Pooling parameters :  Sum pooling or Average pooling. Default Max pooling
 
-
-
-
+Fully connected Layer: It is similar to standard neural network
 
 '''
 
+import numpy as np
+import torch
+import torchvision
+import  torchvision.transforms as transforms
+
+
+seed = 50                      # A standard random seed for reproducible result.
+np.random.seed(seed)
+torch.manual_seed(seed)
 
 
 
