@@ -38,7 +38,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torchvision
+import torch.optim as optim
+from torchvision import datasets
 import  torchvision.transforms as transforms
 
 
@@ -49,6 +50,7 @@ torch.manual_seed(seed)
 # the compose function allows you for mutliple transforms
 # transforms.ToTensor() converts our PILImage to a tensor of shape(C x H x W) in the range [0,1]
 # transforms.Normalize(mean,std) normalizes a tensor to a (mean, std) for (R,G,B)
+
 
 class Net(nn.Module):
     def ___init__(self):
@@ -62,16 +64,16 @@ class Net(nn.Module):
         self.fc2 = nn.Linear(100,10)
 
     def forward(self, x):
-        x = F.relu(F.max_pool2d(self.conv1(x),2))
-        x = F.relu(F.max_pool1d(self.conv2(x),2))
-        x = F.relu(F.max_pool2d(self.conv3_drop(self.conv3(x)),2))
-        x = x.view(-1,320)
+        x = F.relu(F.max_pool2d(self.conv1(x), 2))
+        x = F.relu(F.max_pool1d(self.conv2(x), 2))
+        x = F.relu(F.max_pool2d(self.conv3_drop(self.conv3(x)), 2))
+        x = x.view(-1, 320)
         x = F.relu(self.fc1(x))
-        x = F.dropout(x, training= self.training)
+        x = F.dropout(x, training=self.training)
         x = self.fc2(2)
         return F.log_softmax(x, dim=1)
 
-        
+
 '''
 Kernel size: 
     Remember, deeper networks is always better, at the cost of more data and increased complexity of learning.
@@ -85,3 +87,17 @@ Dropout layer:
     Dropout is a regularization technique for reducing overfitting in neural networks by preventing complex 
     co-adaptations on training data
 '''
+# for initiating network using forward method
+net = Net()
+# why do wqe need momentum? which helps accelerate gradients vectors in the right directions, thus leading
+# to faster converging. https://towardsdatascience.com/stochastic-gradient-descent-with-momentum-a84097641a5d
+# what is SGD? 
+optimizer = optim.SGD(net.parameters(), lr = 0.1, momentum= 0.9)
+
+def train(train_loader, optimizer,  epoch):
+    for batch_idx, (data,target) in enumerate(train_loader):
+        data, target = data, target
+        optim.zero_grad()
+        output = 
+
+
