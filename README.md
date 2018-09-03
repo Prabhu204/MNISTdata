@@ -7,10 +7,13 @@ It is a good database for people who want to try learning techniques and pattern
 
 Four files are available by the site:
 
-train-images-idx3-ubyte.gz:  training set images (9912422 bytes) \n
-train-labels-idx1-ubyte.gz:  training set labels (28881 bytes) \n
-t10k-images-idx3-ubyte.gz:   test set images (1648877 bytes) \n
-t10k-labels-idx1-ubyte.gz:   test set labels (4542 bytes)\n
+train-images-idx3-ubyte.gz:  training set images (9912422 bytes)
+
+train-labels-idx1-ubyte.gz:  training set labels (28881 bytes) 
+
+t10k-images-idx3-ubyte.gz:   test set images (1648877 bytes) 
+
+t10k-labels-idx1-ubyte.gz:   test set labels (4542 bytes)
 
 Source:
 [1]https://en.wikipedia.org/wiki/MNIST_database
