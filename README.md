@@ -5,7 +5,7 @@ The MNIST database of handwritten digits, available from below page, has a train
 
 It is a good database for people who want to try learning techniques and pattern recognition methods on real-world data while spending minimal efforts on preprocessing and formatting.
 
-Four files are available on this site:
+Four files are available by the site:
 
 train-images-idx3-ubyte.gz:  training set images (9912422 bytes)
 train-labels-idx1-ubyte.gz:  training set labels (28881 bytes)
