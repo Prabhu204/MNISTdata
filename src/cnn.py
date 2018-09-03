@@ -42,35 +42,51 @@ import torch.optim as optim
 from torchvision import datasets
 import  torchvision.transforms as transforms
 
+train_loader = torch.utils.data.DataLoader(
+    datasets.MNIST('/home/prabhu/MNISTdata/Data', train = True, download = True,
+                                           transform = transforms.Compose([transforms.ToTensor(),
+                                                                           transforms.Normalize((0.1307,),(0.3081,))
+                                                                           ])), batch_size = 100, shuffle= True
+                                         )
 
-seed = 50                      # A standard random seed for reproducible result.
+test_loader = torch.utils.data.DataLoader(
+    datasets.MNIST('/home/prabhu/MNISTdata/Data', train= False,
+                                                         transform=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.1307,), (0.3081,))
+                                                                                       ])),batch_size= 100,shuffle = True
+                                          )
+
+
+
+
+seed = 50 # A standard random seed for reproducible result.
 np.random.seed(seed)
 torch.manual_seed(seed)
 
-# the compose function allows you for mutliple transforms
+# the compose function allows you for multiple transforms
 # transforms.ToTensor() converts our PILImage to a tensor of shape(C x H x W) in the range [0,1]
 # transforms.Normalize(mean,std) normalizes a tensor to a (mean, std) for (R,G,B)
 
 
 class Net(nn.Module):
-    def ___init__(self):
+    def __init__(self):
         super(Net,self).__init__()
         # input chanel is based on image color i.e gray scale = 1 or color RGB = 3, kernel_size is your preference.
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=3)
-        self.conv2 = nn.Conv2d(10, 20, kernel_size=3)
-        self.conv3 = nn.Conv2d(20, 30, kernel_size=3)
-        self.conv3_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320,100)
-        self.fc2 = nn.Linear(100,10)
+        self.conv1 = nn.Conv2d(1, 10,kernel_size=3)
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=4)
+        self.conv3 = nn.Conv2d(20, 20, kernel_size=2)
+        # self.conv3_drop = nn.Dropout2d() drop out usally applies after fully connected layer
+        self.fc1 = nn.Linear(80, 40)
+        self.fc2 = nn.Linear(40,10)
 
     def forward(self, x):
         x = F.relu(F.max_pool2d(self.conv1(x), 2))
-        x = F.relu(F.max_pool1d(self.conv2(x), 2))
-        x = F.relu(F.max_pool2d(self.conv3_drop(self.conv3(x)), 2))
-        x = x.view(-1, 320)
+        x = F.relu(F.max_pool2d(self.conv2(x), 2))
+        # x = F.relu(F.max_pool2d(self.conv3_drop(self.conv3(x)), 2))
+        x = F.relu(F.max_pool2d(self.conv3(x),2))
+        x = x.view(-1, 80)
         x = F.relu(self.fc1(x))
-        x = F.dropout(x, training=self.training)
-        x = self.fc2(2)
+        #x = F.dropout(x, training=self.training)
+        x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
 
@@ -88,16 +104,50 @@ Dropout layer:
     co-adaptations on training data
 '''
 # for initiating network using forward method
-net = Net()
+# net = Net()
 # why do wqe need momentum? which helps accelerate gradients vectors in the right directions, thus leading
 # to faster converging. https://towardsdatascience.com/stochastic-gradient-descent-with-momentum-a84097641a5d
-# what is SGD? 
-optimizer = optim.SGD(net.parameters(), lr = 0.1, momentum= 0.9)
+# what is SGD?
 
-def train(train_loader, optimizer,  epoch):
+model = Net()
+optimizer = optim.SGD(model.parameters(), lr = 0.1, momentum= 0.9)
+
+
+def train(train_loader, model, optimizer,  epoch, log_interval = 10):
+    model.train()
     for batch_idx, (data,target) in enumerate(train_loader):
         data, target = data, target
-        optim.zero_grad()
-        output = 
+        optimizer.zero_grad()
+        output = model(data)
+        loss = F.nll_loss(output, target)
+        loss.backward()  # to compute weight values
+        optimizer.step() # to update weight values
+        if batch_idx % log_interval  == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(epoch, batch_idx*len(data), len(train_loader.dataset),
+                                                                           100. * batch_idx/len(train_loader), loss.item()))
+
+
+
+
+def test(model, test_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data, target
+            output = model(data)
+            test_loss += F.nll_loss(output, target) # to sum up batch loss
+            pred = output.max(1, keepdim = True)[1] # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    test_loss /= len(test_loader.dataset)
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct, len(test_loader.dataset), 100. *correct/ len(test_loader.dataset)))
+
+
+for epoch in range(1, 10):
+    print(train(train_loader= train_loader,model = model, optimizer= optimizer,  epoch= epoch, log_interval = 10))
+
+
+print(test(model= model, test_loader= test_loader))
 
 
