@@ -148,6 +148,10 @@ for epoch in range(1, 10):
     print(train(train_loader= train_loader,model = model, optimizer= optimizer,  epoch= epoch, log_interval = 10))
 
 
+
 print(test(model= model, test_loader= test_loader))
+
+
+
 
 

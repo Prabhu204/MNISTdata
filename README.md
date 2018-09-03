@@ -6,7 +6,7 @@ It is a good database for people who want to try learning techniques and pattern
 
 ![Sample images from MNIST test dataset.](MnistExamples.png)
 
- **Sample images from MNIST test dataset.**
+ **Sample image from MNIST test dataset.**
 
 Four files are available by the site:
 
