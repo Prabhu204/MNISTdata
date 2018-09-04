@@ -148,7 +148,7 @@ def test(model, test_loader):
     res = "Prediction:\n\nAccuracy:{} \nLoss:{} \nConfusion matrix:\n{}".format(
         test_metrics['Accuracy'], test_metrics['Loss'], test_metrics['Confusion_matrix'])
 
-    with open('src/Result.txt', 'w') as f:
+    with open('src/cnn Result.txt', 'w') as f:
         f.write(res)
     return res
 
