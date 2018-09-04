@@ -2,3 +2,4 @@ Data/
 .idea/
 torch
 src/plot_graph.py
+src/Result
