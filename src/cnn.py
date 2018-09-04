@@ -109,7 +109,7 @@ Dropout layer:
 # net = Net()
 # why do wqe need momentum? which helps accelerate gradients vectors in the right directions, thus leading
 # to faster converging. https://towardsdatascience.com/stochastic-gradient-descent-with-momentum-a84097641a5d
-# what is SGD?
+
 
 model = Net()
 optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum= 0.9)
