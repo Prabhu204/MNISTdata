@@ -41,6 +41,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets
 import  torchvision.transforms as transforms
+from src.Evaluations import get_metrics
+import csv
 
 train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('/home/prabhu/MNISTdata/Data', train = True, download = True,
@@ -110,8 +112,8 @@ Dropout layer:
 # what is SGD?
 
 model = Net()
-optimizer = optim.SGD(model.parameters(), lr = 0.1, momentum= 0.9)
-
+optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum= 0.9)
+criterion = nn.CrossEntropyLoss()
 
 def train(train_loader, model, optimizer,  epoch, log_interval = 10):
     model.train()
@@ -119,7 +121,7 @@ def train(train_loader, model, optimizer,  epoch, log_interval = 10):
         data, target = data, target
         optimizer.zero_grad()
         output = model(data)
-        loss = F.nll_loss(output, target)
+        loss = criterion(output, target)
         loss.backward()  # to compute weight values
         optimizer.step() # to update weight values
         if batch_idx % log_interval  == 0:
@@ -137,12 +139,23 @@ def test(model, test_loader):
         for data, target in test_loader:
             data, target = data, target
             output = model(data)
-            test_loss += F.nll_loss(output, target) # to sum up batch loss
+            print(output)
+            test_loss += criterion(output, target) # to sum up batch loss
             pred = output.max(1, keepdim = True)[1] # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
     test_loss /= len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct, len(test_loader.dataset), 100. *correct/ len(test_loader.dataset)))
 
+
+    # names = ['True Label', 'Predicted Label', 'Content']
+    # with open('src/Result', 'w') as csv_file:
+    #     data_writer = csv.DictWriter(csv_file, fieldnames=names, quoting=csv.QUOTE_NONNUMERIC)
+    #     for i, j, k in zip(target, pred, data):
+    #         data_writer.writerow({
+    #             'True Label': i+1, 'Predicted Label': j+1, 'Content': k})
+    # test_metrics = get_metrics(target, pred, list_metrics=['Accuracy', 'Loss','Confusion_matrics'])
+    # print("Prediction:\n  Accuracy: {} Loss: {} \nConfusion matrix: \n{}".format(
+    #     test_metrics['Accuracy'], test_metrics['Loss'], test_metrics['Confusion_matrix']))
 
 for epoch in range(1, 10):
     print(train(train_loader= train_loader,model = model, optimizer= optimizer,  epoch= epoch, log_interval = 10))
@@ -150,7 +163,6 @@ for epoch in range(1, 10):
 
 
 print(test(model= model, test_loader= test_loader))
-
 
 
 
