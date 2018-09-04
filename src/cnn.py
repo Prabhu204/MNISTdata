@@ -139,28 +139,23 @@ def test(model, test_loader):
         for data, target in test_loader:
             data, target = data, target
             output = model(data)
-            print(output)
             test_loss += criterion(output, target) # to sum up batch loss
             pred = output.max(1, keepdim = True)[1] # get the index of the max log-probability
             correct += pred.eq(target.view_as(pred)).sum().item()
     test_loss /= len(test_loader.dataset)
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct, len(test_loader.dataset), 100. *correct/ len(test_loader.dataset)))
-
-
     # names = ['True Label', 'Predicted Label', 'Content']
-    # with open('src/Result', 'w') as csv_file:
+    # with open('src/result', 'w') as csv_file:
     #     data_writer = csv.DictWriter(csv_file, fieldnames=names, quoting=csv.QUOTE_NONNUMERIC)
     #     for i, j, k in zip(target, pred, data):
     #         data_writer.writerow({
     #             'True Label': i+1, 'Predicted Label': j+1, 'Content': k})
-    # test_metrics = get_metrics(target, pred, list_metrics=['Accuracy', 'Loss','Confusion_matrics'])
-    # print("Prediction:\n  Accuracy: {} Loss: {} \nConfusion matrix: \n{}".format(
-    #     test_metrics['Accuracy'], test_metrics['Loss'], test_metrics['Confusion_matrix']))
+    test_metrics = get_metrics(target, pred, list_metrics=['Accuracy', 'Loss','Confusion_matrics'])
+    print("Prediction:\n  Accuracy: {} \nLoss: {} \nConfusion matrix: \n{}".format(
+        test_metrics['Accuracy'], test_metrics['Loss'], test_metrics['Confusion_matrix']))
 
 for epoch in range(1, 10):
     print(train(train_loader= train_loader,model = model, optimizer= optimizer,  epoch= epoch, log_interval = 10))
-
-
 
 print(test(model= model, test_loader= test_loader))
 

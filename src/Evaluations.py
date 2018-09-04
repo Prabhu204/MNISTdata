@@ -18,5 +18,8 @@ def get_metrics(true_value, predicted, list_metrics):
             output['Loss'] = -1
     if 'Confusion_matrics' in list_metrics:
         output['Confusion_matrix'] = metrics.confusion_matrix(true_value,predicted)
+
+    with open('src/Result', 'w') as f:
+        f.write(output)
     return output
 
