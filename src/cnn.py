@@ -157,7 +157,9 @@ def test(model, test_loader):
 for epoch in range(1, 10):
     print(train(train_loader= train_loader,model = model, optimizer= optimizer,  epoch= epoch, log_interval = 10))
 
-print(test(model= model, test_loader= test_loader))
+
+if __name__== '__main__':
+    test(model= model, test_loader= test_loader)
 
 
 
