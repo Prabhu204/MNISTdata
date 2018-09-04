@@ -8,6 +8,8 @@ from sklearn import metrics
 
 def get_metrics(true_value, predicted, list_metrics):
     # predicted = np.argmax(pred_probability, -1)
+    # print (true_value)
+    # print (predicted)
     output= {}
     if 'Accuracy' in list_metrics:
         output['Accuracy'] = metrics.accuracy_score(true_value, predicted)
@@ -18,7 +20,6 @@ def get_metrics(true_value, predicted, list_metrics):
             output['Loss'] = -1
     if 'Confusion_matrics' in list_metrics:
         output['Confusion_matrix'] = metrics.confusion_matrix(true_value,predicted)
-
 
     return output
 
