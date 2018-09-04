@@ -115,6 +115,7 @@ model = Net()
 optimizer = optim.SGD(model.parameters(), lr = 0.01, momentum= 0.9)
 criterion = nn.CrossEntropyLoss()
 
+
 def train(train_loader, model, optimizer,  epoch, log_interval = 10):
     model.train()
     for batch_idx, (data,target) in enumerate(train_loader):
@@ -129,8 +130,6 @@ def train(train_loader, model, optimizer,  epoch, log_interval = 10):
                                                                            100. * batch_idx/len(train_loader), loss.item()))
 
 
-
-
 def test(model, test_loader):
     model.eval()
     test_loss = 0
@@ -139,22 +138,12 @@ def test(model, test_loader):
     target_list = []
     with torch.no_grad():
         for data, target in test_loader:
-            # data, target = data, target
             output = model(data)
             test_loss += criterion(output, target) # to sum up batch loss
             pred = output.argmax(1) # get the index of the max log-probability
             prediction.extend(pred)
             target_list.extend(target)
-            # correct += pred.eq(target.view_as(pred)).sum().item()
-    # test_loss /= len(test_loader.dataset)
-    # print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(test_loss, correct, len(test_loader.dataset), 100. *correct/ len(test_loader.dataset)))
-    # names = ['True Label', 'Predicted Label', 'Content']
-    # with open('src/result', 'w') as csv_file:
-    #     data_writer = csv.DictWriter(csv_file, fieldnames=names, quoting=csv.QUOTE_NONNUMERIC)
-    #     for i, j, k in zip(target, pred, data):
-    #         data_writer.writerow({
-    #             'True Label': i+1, 'Predicted Label': j+1, 'Content': k})
-    # names = ['Accuracy', 'Loss', 'Confusion matrix']
+
     test_metrics = get_metrics(target_list, prediction, list_metrics=['Accuracy', 'Loss','Confusion_matrics'])
     res = "Prediction:\n\nAccuracy:{} \nLoss:{} \nConfusion matrix:\n{}".format(
         test_metrics['Accuracy'], test_metrics['Loss'], test_metrics['Confusion_matrix'])
